@@ -25,7 +25,7 @@ export const logOut = (callback: any) : any => (
 
 export const loginAction = (username: string, password: string, callback: any => void) : any => (
   (dispatch: any => any) => {
-    fetch('http://210.210.178.122:5000/api/user/auth', {
+    fetch('http://localhost:5000/api/user/auth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
