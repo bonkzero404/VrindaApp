@@ -1,22 +1,29 @@
 /* @flow */
-/* global fetch */
 import qs from 'qs';
-import apiConf from '../configs/api';
+import api from '../configs/api';
+import type {
+  UserDataAct,
+  LoginFieldAct,
+} from '../configs/typesact';
 
-export const USER_DATA = 'USER_DATA';
-export const LOGIN_FIELD = 'LOGIN_FIELD';
-export const LOGIN_LOADER = 'LOGIN_LOADER';
+type Action =
+  | UserDataAct
+  | LoginFieldAct;
 
-export const userdata = (user : Object): any => (
-  { type: USER_DATA, user }
+declare function fetch (a: string, b: Object): Promise<*>;
+type ThunkAction = (dispatch: Dispatch) => any;
+type Dispatch = (action: Action | ThunkAction) => any;
+
+export const userdata = (user : Object): Action => (
+  { type: 'USER_DATA', user }
 );
 
-export const loginfield = (field : Object): any => (
-  { type: LOGIN_FIELD, field }
+export const loginfield = (field : Object): Action => (
+  { type: 'LOGIN_FIELD', field }
 );
 
-export const logOut = (callback: any) : any => (
-  (dispatch: any => any) => {
+export const logOut = (callback: (a: boolean) => any): ThunkAction => (
+  (dispatch: Dispatch): any => {
     dispatch(userdata({
       valid: false,
     }));
@@ -25,8 +32,8 @@ export const logOut = (callback: any) : any => (
 );
 
 export const loginAction = (username: string, password: string, callback: any => void) : any => (
-  (dispatch: any => any) => {
-    fetch(`${apiConf}api/user/auth`, {
+  (dispatch: Dispatch): any => {
+    fetch(`${api.apiUrl}api/user/auth`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',

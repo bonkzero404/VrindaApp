@@ -1,42 +1,69 @@
 /* @flow */
-/* global fetch */
 /* eslint quote-props: 0 */
 import qs from 'qs';
-import apiConf from '../configs/api';
+import api from '../configs/api';
+import type {
+  DeviceListAct,
+  DeviceListLoaderAct,
+  LoadingSwitchAct,
+  SelectedItemAct,
+  DeviceStatAct,
+} from '../configs/typesact';
 
-export const DEVICE_LIST = 'DEVICE_LIST';
-export const DEVICE_LIST_LOADER = 'DEVICE_LIST_LOADER';
-export const LOADING_SWITCH = 'LOADING_SWITCH';
-export const SELECTED_ITEM = 'SELECTED_ITEM';
-export const DEVICE_STAT = 'DEVICE_STAT';
+type Action =
+  | DeviceListAct
+  | DeviceListLoaderAct
+  | LoadingSwitchAct
+  | SelectedItemAct
+  | DeviceStatAct;
 
-export const devicelist = (device : Object): any => (
-  { type: DEVICE_LIST, device }
+type State = {
+  userdata: {
+    user: {
+      data: {
+        accessToken: string,
+      }
+    }
+  },
+  devicelist: {
+    device: {
+      valid: boolean,
+    }
+  },
+};
+
+declare function fetch (a: string, b: Object): Promise<*>;
+type GetState = () => State;
+type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;
+type Dispatch = (action: Action | ThunkAction) => any;
+
+export const devicelist = (device: Object): Action => (
+  { type: 'DEVICE_LIST', device }
 );
 
-export const loading = (isloading : bool): any => (
-  { type: DEVICE_LIST_LOADER, isloading }
+export const loading = (isloading : boolean): Action => (
+  { type: 'DEVICE_LIST_LOADER', isloading }
 );
 
-export const loadingSwitch = (isLoadingSwitch : bool): any => (
-  { type: LOADING_SWITCH, isLoadingSwitch }
+export const loadingSwitch = (isLoadingSwitch : boolean): Action => (
+  { type: 'LOADING_SWITCH', isLoadingSwitch }
 );
 
-export const itemSelected = (selected : Object): any => (
-  { type: SELECTED_ITEM, selected }
+export const itemSelected = (selected : Object): Action => (
+  { type: 'SELECTED_ITEM', selected }
 );
 
-export const statDevice = (stat : Object): any => (
-  { type: DEVICE_STAT, stat }
+export const statDevice = (stat : Object): Action => (
+  { type: 'DEVICE_STAT', stat }
 );
 
-export const getDeviceList = () : any => (
-  (dispatch: any => any, getState: any) => {
+export const getDeviceList = (): ThunkAction => (
+  (dispatch: Dispatch, getState: GetState): any => {
     const state = getState();
     const token = state.userdata.user.data.accessToken;
 
-    if (state.devicelist.device || state.devicelist.device.valid === false) {
-      return fetch(`${apiConf}api/device/list`, {
+    if (state.devicelist.device && state.devicelist.device.valid === false) {
+      fetch(`${api.apiUrl}api/device/list`, {
         method: 'GET',
         headers: {
           'Authorization': token,
@@ -52,12 +79,12 @@ export const getDeviceList = () : any => (
   }
 );
 
-export const reloadDeviceList = () : any => (
-  (dispatch: any => any, getState: any) => {
+export const reloadDeviceList = (): ThunkAction => (
+  (dispatch: Dispatch, getState: GetState): any => {
     const state = getState();
     const token = state.userdata.user.data.accessToken;
 
-    return fetch(`${apiConf}api/device/list`, {
+    return fetch(`${api.apiUrl}api/device/list`, {
       method: 'GET',
       headers: {
         'Authorization': token,
@@ -70,8 +97,8 @@ export const reloadDeviceList = () : any => (
   }
 );
 
-export const sendCommand = (id: string, cmd: string, callback: any => void) : any => (
-  (dispatch: any => any, getState: any) => {
+export const sendCommand = (id: string, cmd: string, callback: any => void): ThunkAction => (
+  (dispatch: Dispatch, getState: GetState): any => {
     const state = getState();
     const token = state.userdata.user.data.accessToken;
 
@@ -81,7 +108,7 @@ export const sendCommand = (id: string, cmd: string, callback: any => void) : an
       cmd,
     }));
 
-    fetch(`${apiConf}api/switch/cmd`, {
+    fetch(`${api.apiUrl}api/switch/cmd`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -105,8 +132,8 @@ export const sendCommand = (id: string, cmd: string, callback: any => void) : an
   }
 );
 
-export const getStat = (id: string) : any => (
-  (dispatch: any => any, getState: any) => {
+export const getStat = (id: string): ThunkAction => (
+  (dispatch: Dispatch, getState: GetState): any => {
     const state = getState();
     const token = state.userdata.user.data.accessToken;
 
@@ -114,7 +141,7 @@ export const getStat = (id: string) : any => (
       [id]: 'off',
     }));
 
-    fetch(`${apiConf}api/switch/cmd`, {
+    fetch(`${api.apiUrl}api/switch/cmd`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',

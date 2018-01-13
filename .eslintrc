@@ -8,6 +8,7 @@
   ],
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "no-return-assign": 2
+    "no-return-assign": 2,
+    "no-use-before-define": 0,
   }
 }
