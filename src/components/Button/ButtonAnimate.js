@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint no-nested-ternary: 0 */
 import React, { PureComponent } from 'react';
 import {
   ActivityIndicator,
@@ -7,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import type { Element } from 'react';
 import TouchableBounce from 'react-native/Libraries/Components/Touchable/TouchableBounce';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -22,9 +24,47 @@ type PropTypes = {
   onPress: any,
   onSuccess: () => void,
   scaleOnSuccess: Boolean,
+  onError: any,
+  shakeOnError: any,
+  onReset: () => void,
+  onLoad: () => void,
+  iconSet: any,
+  disabledBackgroundColor: string,
+  disabled: bool,
+  noFill: bool,
+  style: any,
+  labelIcon: Element<*> | any,
+  disabledForegroundColor: string,
+  iconSize: number,
+  labelStyle: any,
+  label: string,
+  renderIndicator: Element<*> | any,
+  renderIcon: Element<*> | any,
+  errorIconColor: string,
+  successIconColor: string,
+  errorIconName: string,
+  successIconName: string,
+  onSecondaryPress: any,
+  bounce: bool,
 };
 
-export default class ButtonAnimate extends PureComponent<PropTypes> {
+type State = {
+  step: number,
+  error: bool,
+};
+
+const styles = {
+  button: {
+    borderRadius: 20,
+    borderWidth: 0.5,
+    height: 40,
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  label: { padding: 9 },
+};
+
+export default class ButtonAnimate extends PureComponent<PropTypes, State> {
   state = { step: 0, error: false };
 
   animated = new Animated.Value(0);
@@ -73,7 +113,7 @@ export default class ButtonAnimate extends PureComponent<PropTypes> {
     } else {
       this.setState({ step: 1 });
 
-      Animated.spring(this.animated, { toValue: 1 }).start(animation => {
+      Animated.spring(this.animated, { toValue: 1 }).start((animation) => {
         if (animation.finished && this.props.onPress) this.props.onPress();
       });
     }
@@ -82,36 +122,40 @@ export default class ButtonAnimate extends PureComponent<PropTypes> {
   success = () => {
     this.setState({ step: 2 });
 
-    Animated.spring(this.animated, { toValue: 2 }).start(animation => {
+    Animated.spring(this.animated, { toValue: 2 }).start((animation) => {
       if (animation.finished && this.props.onSuccess) this.props.onSuccess();
     });
 
-    if (this.props.scaleOnSuccess)
+    if (this.props.scaleOnSuccess) {
       Animated.sequence([
         Animated.timing(this.micro, { toValue: 1, duration: 80 }),
-        Animated.timing(this.micro, { toValue: 0, duration: 80 })
+        Animated.timing(this.micro, { toValue: 0, duration: 80 }),
       ]).start();
+    }
   };
 
   error = () => {
     this.setState({ step: 2, error: true });
 
-    Animated.spring(this.animated, { toValue: 2 }).start(animation => {
-      if (animation.finished && this.props.onError) this.props.onError();
+    Animated.spring(this.animated, { toValue: 2 }).start((animation) => {
+      if (animation.finished && this.props.onError) {
+        this.props.onError();
+      }
     });
 
-    if (this.props.shakeOnError)
+    if (this.props.shakeOnError) {
       Animated.sequence([
         Animated.timing(this.micro, { toValue: 0, duration: 40 }),
         Animated.timing(this.micro, { toValue: 2, duration: 40 }),
-        Animated.timing(this.micro, { toValue: 0, duration: 40 })
+        Animated.timing(this.micro, { toValue: 0, duration: 40 }),
       ]).start();
+    }
   };
 
   reset = () => {
     this.setState({ step: 0 });
 
-    Animated.spring(this.animated, { toValue: 0 }).start(animation => {
+    Animated.spring(this.animated, { toValue: 0 }).start((animation) => {
       if (animation.finished && this.props.onReset) this.props.onReset();
     });
   };
@@ -119,8 +163,10 @@ export default class ButtonAnimate extends PureComponent<PropTypes> {
   load = () => {
     this.setState({ step: 1 });
 
-    Animated.spring(this.animated, { toValue: 1 }).start(animation => {
-      if (animation.finished && this.props.onLoad) this.props.onLoad();
+    Animated.spring(this.animated, { toValue: 1 }).start((animation) => {
+      if (animation.finished && this.props.onLoad) {
+        this.props.onLoad();
+      }
     });
   };
 
@@ -153,13 +199,14 @@ export default class ButtonAnimate extends PureComponent<PropTypes> {
             transform: [
               this.state.error
                 ? { translateX: this.shake }
-                : { scale: this.scale }
+                : { scale: this.scale },
             ],
-            width: this.width
+            width: this.width,
           },
           styles.button,
-          this.props.style
-        ]}>
+          this.props.style,
+        ]}
+      >
         {this.state.step === 0 && (
           <View>
             {this.props.labelIcon ? (
@@ -178,11 +225,12 @@ export default class ButtonAnimate extends PureComponent<PropTypes> {
                   {
                     color: this.props.disabled
                       ? this.props.disabledForegroundColor || 'white'
-                      : this.props.foregroundColor || 'black'
+                      : this.props.foregroundColor || 'black',
                   },
                   styles.label,
-                  this.props.labelStyle
-                ]}>
+                  this.props.labelStyle,
+                ]}
+              >
                 {this.props.label}
               </Text>
             )}
@@ -217,7 +265,7 @@ export default class ButtonAnimate extends PureComponent<PropTypes> {
         this.props.disabled,
       onPress:
         (this.state.step !== 0 && this.props.onSecondaryPress) || this.press,
-      children: button
+      children: button,
     };
 
     if (this.props.bounce) return <TouchableBounce {...props} />;
@@ -225,14 +273,3 @@ export default class ButtonAnimate extends PureComponent<PropTypes> {
     return <TouchableOpacity {...props} />;
   }
 }
-
-const styles = {
-  button: {
-    borderRadius: 20,
-    borderWidth: 0.5,
-    height: 40,
-    marginBottom: 10,
-    marginTop: 10
-  },
-  label: { padding: 9 }
-};
