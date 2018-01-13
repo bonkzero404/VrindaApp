@@ -1,7 +1,7 @@
 import type {
   UserDataAct,
   LoginFieldAct,
-  LoginLOaderAct,
+  LoginLoaderAct,
 } from '../configs/typesact';
 
 type Action =
