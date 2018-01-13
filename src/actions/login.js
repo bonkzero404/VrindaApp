@@ -1,6 +1,7 @@
 /* @flow */
 /* global fetch */
 import qs from 'qs';
+import apiConf from '../configs/api';
 
 export const USER_DATA = 'USER_DATA';
 export const LOGIN_FIELD = 'LOGIN_FIELD';
@@ -25,7 +26,7 @@ export const logOut = (callback: any) : any => (
 
 export const loginAction = (username: string, password: string, callback: any => void) : any => (
   (dispatch: any => any) => {
-    fetch('http://localhost:5000/api/user/auth', {
+    fetch(`${apiConf}api/user/auth`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',

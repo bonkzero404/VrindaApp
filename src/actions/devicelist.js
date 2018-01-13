@@ -2,6 +2,7 @@
 /* global fetch */
 /* eslint quote-props: 0 */
 import qs from 'qs';
+import apiConf from '../configs/api';
 
 export const DEVICE_LIST = 'DEVICE_LIST';
 export const DEVICE_LIST_LOADER = 'DEVICE_LIST_LOADER';
@@ -35,7 +36,7 @@ export const getDeviceList = () : any => (
     const token = state.userdata.user.data.accessToken;
 
     if (state.devicelist.device || state.devicelist.device.valid === false) {
-      return fetch('http://localhost:5000/api/device/list', {
+      return fetch(`${apiConf}api/device/list`, {
         method: 'GET',
         headers: {
           'Authorization': token,
@@ -56,7 +57,7 @@ export const reloadDeviceList = () : any => (
     const state = getState();
     const token = state.userdata.user.data.accessToken;
 
-    return fetch('http://localhost:5000/api/device/list', {
+    return fetch(`${apiConf}api/device/list`, {
       method: 'GET',
       headers: {
         'Authorization': token,
@@ -80,7 +81,7 @@ export const sendCommand = (id: string, cmd: string, callback: any => void) : an
       cmd,
     }));
 
-    fetch('http://localhost:5000/api/switch/cmd', {
+    fetch(`${apiConf}api/switch/cmd`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -113,7 +114,7 @@ export const getStat = (id: string) : any => (
       [id]: 'off',
     }));
 
-    fetch('http://localhost:5000/api/switch/cmd', {
+    fetch(`${apiConf}api/switch/cmd`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
