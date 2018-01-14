@@ -6,13 +6,14 @@ import { Alert, View, Text, TouchableOpacity, ActivityIndicator } from 'react-na
 import { connect } from 'react-redux';
 import { lifecycle, pure } from 'recompose';
 import { sendCommand, getStat, statDevice } from '../../actions/devicelist';
+import styles from './styles';
 
 type PropTypes = {
   item: Object,
-  sendCommand: (id: string, cmd: string, cb: any) => void,
+  sendCommand: (id: string, cmd: string) => Promise<*>,
   stat: Object,
   selected: Object,
-  statDevice: Object,
+  statDevice: (o: Object) => void,
 }
 
 const enhance: any = lifecycle({
@@ -25,15 +26,21 @@ const enhance: any = lifecycle({
 
 // create a component
 const ItemLists = (props: PropTypes): Element<*> => {
+  const changeStatDevice = (o: Object): void => {
+    props.statDevice(o);
+  };
+
   const switchOnOff = (id: string, cmd: string) => {
-    props.sendCommand(id, cmd, (result) => {
+    props.sendCommand(id, cmd).then((result: any) => {
       if (result.valid === false) {
         Alert.alert(result.messages[0]);
       } else {
-        props.statDevice({
+        changeStatDevice({
           [id]: cmd,
         });
       }
+    }).catch(() => {
+      Alert.alert('Telah terjadi kesalahan pada sistem');
     });
   };
 
@@ -41,78 +48,42 @@ const ItemLists = (props: PropTypes): Element<*> => {
     <View style={{ padding: 20 }}>
       {props.item.online === 0 ? (
         <View
-          style={{
-            padding: 5,
-            backgroundColor: 'red',
-            width: 70,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          style={styles.labelOffline}
         >
-          <Text style={{ color: '#fff' }}>Offline</Text>
+          <Text style={styles.textColor}>Offline</Text>
         </View>
       ) : (
         <View
-          style={{
-            padding: 5,
-            backgroundColor: 'green',
-            width: 70,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          style={styles.labelOnline}
         >
-          <Text style={{ color: '#fff' }}>Online</Text>
+          <Text style={styles.textColor}>Online</Text>
         </View>
       )}
-      <Text>ID Perangkat : {props.item.deviceid}</Text>
-      <Text>Nama Perangkat : {props.item.devicelabel}</Text>
+      <Text style={styles.labelFsize}>ID Perangkat : {props.item.deviceid}</Text>
+      <Text style={styles.labelFsize}>Nama Perangkat : {props.item.devicelabel}</Text>
       <View style={{ flex: 1, flexDirection: 'row' }}>
         {props.selected.loading &&
           props.selected.id === props.item.deviceid &&
           props.selected.cmd === 'on' ? (
             <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 50,
-                height: 50,
-                backgroundColor: '#ccc',
-                borderRadius: 50,
-                marginTop: 10,
-              }}
+              style={styles.buttonProgressBackground}
             >
-              <ActivityIndicator color="red" />
+              <ActivityIndicator color="#2ecc71" />
             </View>
         ) : props.item.online === 1 &&
         props.stat &&
         props.stat[props.item.deviceid] === 'on' ? (
           <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 50,
-              height: 50,
-              backgroundColor: '#BE25B1',
-              borderRadius: 50,
-              marginTop: 10,
-            }}
+            style={styles.buttonOnOffActive}
           >
-            <Text style={{ color: '#ffffff' }}>ON</Text>
+            <Text style={styles.textColor}>ON</Text>
           </View>
           ) : (
             <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 50,
-                height: 50,
-                backgroundColor: '#ccc',
-                borderRadius: 50,
-                marginTop: 10,
-              }}
+              style={styles.buttonOnOffInActive}
               onPress={() => switchOnOff(props.item.deviceid, 'on')}
             >
-              <Text style={{ color: '#ffffff' }}>ON</Text>
+              <Text style={styles.textColor}>ON</Text>
             </TouchableOpacity>
           )
         }
@@ -121,65 +92,37 @@ const ItemLists = (props: PropTypes): Element<*> => {
           props.selected.id === props.item.deviceid &&
           props.selected.cmd === 'off' ? (
             <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 50,
-                height: 50,
-                backgroundColor: '#ccc',
-                borderRadius: 50,
+              style={[styles.buttonProgressBackground, {
                 marginLeft: 10,
-                marginTop: 10,
-              }}
+              }]}
             >
-              <ActivityIndicator color="red" />
+              <ActivityIndicator color="#2ecc71" />
             </View>
         ) :
           props.item.online === 0 ? (
             <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 50,
-                height: 50,
-                backgroundColor: '#BE25B1',
-                borderRadius: 50,
+              style={[styles.buttonOnOffActive, {
                 marginLeft: 10,
-                marginTop: 10,
-              }}
+              }]}
             >
-              <Text style={{ color: '#ffffff' }}>OFF</Text>
+              <Text style={styles.textColor}>OFF</Text>
             </View>
           ) : props.stat && props.stat[props.item.deviceid] === 'off' ? (
             <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 50,
-                height: 50,
-                backgroundColor: '#BE25B1',
-                borderRadius: 50,
+              style={[styles.buttonOnOffActive, {
                 marginLeft: 10,
-                marginTop: 10,
-              }}
+              }]}
             >
-              <Text style={{ color: '#ffffff' }}>OFF</Text>
+              <Text style={styles.textColor}>OFF</Text>
             </View>
             ) : (
               <TouchableOpacity
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 50,
-                  height: 50,
-                  backgroundColor: '#ccc',
-                  borderRadius: 50,
+                style={[styles.buttonOnOffInActive, {
                   marginLeft: 10,
-                  marginTop: 10,
-                }}
+                }]}
                 onPress={() => switchOnOff(props.item.deviceid, 'off')}
               >
-                <Text style={{ color: '#ffffff' }}>OFF</Text>
+                <Text style={styles.textColor}>OFF</Text>
               </TouchableOpacity>
             )
           }
@@ -196,7 +139,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  sendCommand: (id, cmd, cb) => dispatch(sendCommand(id, cmd, cb)),
+  sendCommand: (id, cmd) => dispatch(sendCommand(id, cmd)),
   getStat: id => dispatch(getStat(id)),
   statDevice: o => dispatch(statDevice(o)),
 });

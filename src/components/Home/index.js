@@ -7,10 +7,11 @@ import { withRouter } from 'react-router-native';
 import { push } from 'react-router-redux';
 import { lifecycle, pure } from 'recompose';
 import { logOut } from '../../actions/login';
-import { getDeviceList, reloadDeviceList } from '../../actions/devicelist';
+import { getDeviceList } from '../../actions/devicelist';
 import Container from '../Container';
 import MainHeader from '../Header/MainHeader';
 import ItemLists from './ItemLists';
+import styles from './styles';
 
 let isLoading = {};
 
@@ -32,11 +33,7 @@ const Home = (props: PropTypes): Element<*> => {
 
   const renderSeparator = (): Element<*> => (
     <View
-      style={{
-        height: 1,
-        width: '100%',
-        backgroundColor: '#CED0CE',
-      }}
+      style={styles.renderSeparator}
     />
   );
 
@@ -57,9 +54,8 @@ const Home = (props: PropTypes): Element<*> => {
   return (
     <Container>
       <MainHeader
-        caption="VrindaApp"
+        caption="Semua Perangkat"
         onSelect={selectMenu}
-        onRefresh={() => props.reloadDeviceList()}
       />
       {isLoading ? (
         <Text>Loading</Text>
@@ -87,7 +83,6 @@ const mapDispatchToProps = dispatch => ({
   logOut: cb => dispatch(logOut(cb)),
   toLogin: () => dispatch(push('/login')),
   getDeviceList: () => dispatch(getDeviceList()),
-  reloadDeviceList: () => dispatch(reloadDeviceList()),
 });
 
 export default withRouter(connect(

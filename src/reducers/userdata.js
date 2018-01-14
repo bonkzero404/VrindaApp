@@ -6,7 +6,8 @@ import type {
 
 type Action =
   | UserDataAct
-  | LoginFieldAct;
+  | LoginFieldAct
+  | LoginLoaderAct;
 
 const initialState = {
   user: {},

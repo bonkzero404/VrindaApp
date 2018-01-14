@@ -13,7 +13,7 @@ import AppLogo from '../images/logo-dark-bg.png';
 
 const springValue = new Animated.Value(0.3);
 
-const SpringAnimateLogo = () : any => {
+const SpringAnimateLogo = (): any => {
   Animated.spring(springValue, {
     toValue: 1,
     friction: 1,

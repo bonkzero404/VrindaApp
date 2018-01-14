@@ -80,7 +80,7 @@ export const getDeviceList = (): ThunkAction => (
 );
 
 export const reloadDeviceList = (): ThunkAction => (
-  (dispatch: Dispatch, getState: GetState): any => {
+  (dispatch: Dispatch, getState: GetState): any => (new Promise((resolve, reject) => {
     const state = getState();
     const token = state.userdata.user.data.accessToken;
 
@@ -91,14 +91,16 @@ export const reloadDeviceList = (): ThunkAction => (
       },
     }).then(response => response.json()).then((responseJson) => {
       dispatch(devicelist(responseJson));
+      resolve(responseJson);
     }).catch((error) => {
       dispatch(devicelist(error));
+      reject(error);
     });
-  }
+  }))
 );
 
-export const sendCommand = (id: string, cmd: string, callback: any => void): ThunkAction => (
-  (dispatch: Dispatch, getState: GetState): any => {
+export const sendCommand = (id: string, cmd: string): ThunkAction => (
+  (dispatch: Dispatch, getState: GetState): any => (new Promise((resolve, reject) => {
     const state = getState();
     const token = state.userdata.user.data.accessToken;
 
@@ -125,11 +127,11 @@ export const sendCommand = (id: string, cmd: string, callback: any => void): Thu
         id,
         cmd,
       }));
-      callback(responseJson);
+      resolve(responseJson);
     }).catch((error) => {
-      callback(error);
+      reject(error);
     });
-  }
+  }))
 );
 
 export const getStat = (id: string): ThunkAction => (
