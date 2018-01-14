@@ -1,5 +1,6 @@
 /* @flow */
 /* eslint no-confusing-arrow: 0 */
+/* eslint no-shadow: 0 */
 import React, { PureComponent } from 'react';
 import type { Element } from 'react';
 import { Redirect, Route } from 'react-router-native';
@@ -25,7 +26,7 @@ class PrivateRouteContainer extends PureComponent<PropTypes> {
         {...props}
         render={allProps =>
           isAuthenticated
-          ? <PureComponent {...allProps} />
+          ? <React.PureComponent {...allProps} />
           : (
             <Redirect to={{
                 pathname: '/login',
