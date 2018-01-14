@@ -26,7 +26,7 @@ class PrivateRouteContainer extends PureComponent<PropTypes> {
         {...props}
         render={allProps =>
           isAuthenticated
-          ? <React.PureComponent {...allProps} />
+          ? <PureComponent {...allProps} />
           : (
             <Redirect to={{
                 pathname: '/login',
