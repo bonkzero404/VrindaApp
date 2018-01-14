@@ -26,6 +26,12 @@ npm install
 react-native run-android
 ```
 
+## Screenshots
+
+<img align="center" width="300" src="https://raw.githubusercontent.com/bonkzero404/VrindaSwitch/master/screen-1.png" />
+
+<img align="center" width="300" src="https://raw.githubusercontent.com/bonkzero404/VrindaSwitch/master/screen-2.png" />
+
 ## Contribute
 
 NOTES : this code still Quick and Dirty. PRs accepted.
