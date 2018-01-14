@@ -28,9 +28,9 @@ react-native run-android
 
 ## Screenshots
 
-<img align="center" width="300" src="https://raw.githubusercontent.com/bonkzero404/VrindaSwitch/master/screen-1.png" />
+<img align="center" width="300" src="https://raw.githubusercontent.com/bonkzero404/Vrinda/master/screen-1.png" />
 
-<img align="center" width="300" src="https://raw.githubusercontent.com/bonkzero404/VrindaSwitch/master/screen-2.png" />
+<img align="center" width="300" src="https://raw.githubusercontent.com/bonkzero404/Vrinda/master/screen-2.png" />
 
 ## Contribute
 
